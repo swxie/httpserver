@@ -9,7 +9,7 @@
 
 ## Todo List
 - 自己实现一个基于epoll的测试工具：webbench的fork模拟客户端很难满足高并发模拟的需要
-- 通过redis连接池来实现页面的缓存功能
+- 通过redis连接池来实现页面的缓存功能，缓解IO压力
 - 实现make install，进行服务器目录的生成
 
 ## 使用
