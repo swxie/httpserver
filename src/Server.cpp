@@ -15,9 +15,8 @@ string Server::root;
 int Server::listen_fd;
 
 //redis参数
-//string Server::redis_ip;
-//int Server::redis_port;
-//redisContext *Server::db;
+string Server::redis_ip;
+int Server::redis_port;
 
 //功能模块
 Handler *Server::handler;
@@ -62,71 +61,71 @@ void Server::loadConfig(string path)
 	config.readFile(path.c_str());
 	if (!config.lookupValue("server.thread_num", thread_num))
 	{
-		cout << "server thread_num setting not found, use default setting" << endl;
+		cout << " \033[32m[INFO]: \033[0m" << "server thread_num setting not found, use default setting" << endl;
 		thread_num = 8;
 	}
 	if (!config.lookupValue("server.queue_size", queue_size))
 	{
-		cout << "server queue_size setting not found, use default setting" << endl;
+		cout << " \033[32m[INFO]: \033[0m" << "server queue_size setting not found, use default setting" << endl;
 		queue_size = 1000;
 	}
 	if (!config.lookupValue("server.max_fd", max_fd))
 	{
-		cout << "server max_fd setting not found, use default setting" << endl;
+		cout << " \033[32m[INFO]: \033[0m" << "server max_fd setting not found, use default setting" << endl;
 		max_fd = 1024;
 	}
 	if (!config.lookupValue("server.root", root))
 	{
-		cout << "server root setting not found, use default setting" << endl;
+		cout << " \033[32m[INFO]: \033[0m" << "server root setting not found, use default setting" << endl;
 		root = ".";
 	}
-	//if (!config.lookupValue("server.redis_ip", redis_ip))
-	//{
-	//	cout << "server redis_ip setting not found, use default setting" << endl;
-	//	redis_ip = "127.0.0.1";
-	//}
-	//if (!config.lookupValue("server.redis_port", redis_port))
-	//{
-	//	cout << "server redis_port setting not found, use default setting" << endl;
-	//	redis_port = 6379;
-	//}
+	if (!config.lookupValue("server.redis_ip", redis_ip))
+	{
+		cout << " \033[32m[INFO]: \033[0m" << "server redis_ip setting not found, use default setting" << endl;
+		redis_ip = "127.0.0.1";
+	}
+	if (!config.lookupValue("server.redis_port", redis_port))
+	{
+		cout << " \033[32m[INFO]: \033[0m" << "server redis_port setting not found, use default setting" << endl;
+		redis_port = 6379;
+	}
 	if (!config.lookupValue("server.log_path", log_path))
 	{
-		cout << "server log_path setting not found, use default setting" << endl;
+		cout << " \033[32m[INFO]: \033[0m" << "server log_path setting not found, use default setting" << endl;
 		log_path = "log/";
 	}
 	if (!config.lookupValue("server.info_on", info_on))
 	{
-		cout << "server info_on setting not found, use default setting" << endl;
+		cout << " \033[32m[INFO]: \033[0m" << "server info_on setting not found, use default setting" << endl;
 		info_on = true;
 	}
 	if (!config.lookupValue("server.debug_on", debug_on))
 	{
-		cout << "server debug_on setting not found, use default setting" << endl;
+		cout << " \033[32m[INFO]: \033[0m" << "server debug_on setting not found, use default setting" << endl;
 		debug_on = true;
 	}
 	if (!config.lookupValue("server.warn_on", warn_on))
 	{
-		cout << "server warn_on setting not found, use default setting" << endl;
+		cout << " \033[32m[INFO]: \033[0m" << "server warn_on setting not found, use default setting" << endl;
 		warn_on = true;
 	}
 	if (!config.lookupValue("server.error_on", error_on))
 	{
-		cout << "server error_on setting not found, use default setting" << endl;
+		cout << " \033[32m[INFO]: \033[0m" << "server error_on setting not found, use default setting" << endl;
 		error_on = true;
 	}
 	if (!config.lookupValue("server.port", port))
 	{
-		cout << "server port setting not found, use default setting" << endl;
+		cout << " \033[32m[INFO]: \033[0m" << "server port setting not found, use default setting" << endl;
 		port = 80;
 	}
-	/*
-	db = redisConnect(redis_ip.c_str(), redis_port);
+	redisContext *db = redisConnect(redis_ip.c_str(), redis_port);
 	if (db->err != 0)
 	{
-		throw runtime_error("redis is not running");
+		cout << " \033[32m[INFO]: \033[0m" << "redis is not running" << endl;
 	}
-	*/
+	redisFree(db);
+	cout << " \033[32m[INFO]: \033[0m" << "server runs in background" << endl;
 }
 
 void Server::start()
@@ -242,20 +241,9 @@ void Server::start()
 	thread_pool.free();
 	Log::log("delete the handle", DEBUG);
 	delete[] handler;
-	/*
-	try
-    {
-        redisFree(db);
-    }
-    catch (const std::exception &e)
-    {
-        Log::log(e.what(), ERROR);
-	}
-	*/
 	Log::log("close server", INFO);
 	Log::stop();
-	while (!Log::finished())
-		;
+	while (!Log::finished());
 }
 //服务器忙时返回503是废案，后来发现服务器忙时直接关闭连接比发送错误码更现实：更不会占用宝贵的IO资源
 void Server::showError(int connfd, Status st)

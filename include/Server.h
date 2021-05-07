@@ -13,7 +13,7 @@
 
 #include <signal.h>
 #include <sys/wait.h>
-//#include <hiredis/hiredis.h>
+#include <hiredis/hiredis.h>
 #include <libconfig.h++>
 #include <time.h>
 
@@ -36,7 +36,8 @@ public:
     static void free();
 
     //用来获得信息的函数
-    //static redisContext* getDb(){ return db; }
+    static string getRedisIp(){ return redis_ip; }
+    static int getRedisPort(){ return redis_port; }
     static int getEpollFd(){ return epoll_fd; }
     static string getRoot(){ return root; }
 
@@ -56,9 +57,8 @@ private:
     static int listen_fd;
 
     //redis参数
-    //static string redis_ip;
-    //static int redis_port;
-    //static redisContext *db;
+    static string redis_ip;
+    static int redis_port;
     
     //功能模块
     static Handler* handler;

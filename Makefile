@@ -1,7 +1,6 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -pedantic -std=c++11 -g -fsanitize=address -Iinclude -c
-LDFLAGS =  -fsanitize=address
-LBLIBS = -lconfig++ -pthread
+CXXFLAGS = -Wall -Wextra -pedantic -std=c++11 -Iinclude -c
+LBLIBS = -lconfig++ -pthread -lhiredis
 
 SRC = $(wildcard ./src/*.cpp) 
 SRC_HTTP = $(wildcard ./src/http/*.cpp)

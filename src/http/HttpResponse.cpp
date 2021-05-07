@@ -152,15 +152,38 @@ void HttpResponse::doRequest(HttpRequest *request)
         url = Server::getRoot() + request->getUrl();
     Log::log("request url = " + url, INFO);
     //使用缓存
-    //auto db = Server::getDb();
-    //redisReply *reply = (redisReply *)redisCommand(db, "%s exists", url.c_str());
-    //if (reply->integer == 1)
-    //{
-    //    reply = (redisReply *)redisCommand(db, "get %s", url.c_str());
-    //    response_body = string(reply->str);
-    //    generateResponse();
-    //    return;
-    //}
+    redisContext *db = redisConnect(Server::getRedisIp().c_str(), Server::getRedisPort());
+    if (db->err == 0)
+    {
+        redisReply *reply = (redisReply *)redisCommand(db, "%s exists", url.c_str());
+        if (reply->integer == 1)
+        {
+            reply = (redisReply *)redisCommand(db, "get %s", url.c_str());
+            response_body = string(reply->str);
+        }
+        else
+        {
+            ifstream in_file(url);
+            if (in_file.fail())
+            {
+                Log::log("[404]: " + url + " not found", WARN);
+                status = "404";
+            }
+            else
+            {
+                stringstream buffer;
+                buffer << in_file.rdbuf();
+                response_body = buffer.str();
+                redisCommand(db, "set %s %s", url.c_str(), response_body.c_str());
+                in_file.close();
+            }
+        }
+        redisFree(db);
+        autoSetContentType(url);
+        generateResponse();
+        return;
+    }
+    redisFree(db);
     ifstream in_file(url);
     if (in_file.fail())
     {
@@ -169,12 +192,12 @@ void HttpResponse::doRequest(HttpRequest *request)
         generateResponse();
         return;
     }
-    autoSetContentType(url);
     stringstream buffer;
     buffer << in_file.rdbuf();
     response_body = buffer.str();
-    //redisCommand(db, "set %s %s", url.c_str(), response_body.c_str());
+    redisCommand(db, "set %s %s", url.c_str(), response_body.c_str());
     in_file.close();
+    autoSetContentType(url);
     generateResponse();
 }
 
