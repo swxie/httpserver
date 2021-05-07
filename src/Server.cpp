@@ -56,7 +56,7 @@ void Server::init()
 
 void Server::loadConfig(string path)
 {
-	cout << "Loading config" << endl;
+	cout << " \033[32m[INFO]: \033[0m" << "Loading config" << endl;
 	Config config;
 	config.readFile(path.c_str());
 	if (!config.lookupValue("server.thread_num", thread_num))
