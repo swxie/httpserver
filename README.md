@@ -11,7 +11,6 @@
 ## Todo List
 - 自己实现一个基于epoll的测试工具：webbench的fork模拟客户端很难满足高并发模拟的需要
 - 实现make install，进行服务器目录的生成
-- 一个潜在的bug：hiredis在并发情况下会出现重复free的问题
 
 ## 使用
 ### 编译环境
