@@ -195,7 +195,6 @@ void HttpResponse::doRequest(HttpRequest *request)
     stringstream buffer;
     buffer << in_file.rdbuf();
     response_body = buffer.str();
-    redisCommand(db, "set %s %s", url.c_str(), response_body.c_str());
     in_file.close();
     autoSetContentType(url);
     generateResponse();
