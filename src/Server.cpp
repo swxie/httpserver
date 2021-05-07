@@ -79,37 +79,37 @@ void Server::loadConfig(string path)
 		cout << " \033[32m[INFO]: \033[0m" << "server root setting not found, use default setting" << endl;
 		root = ".";
 	}
-	if (!config.lookupValue("server.redis_ip", redis_ip))
+	if (!config.lookupValue("server.redis.redis_ip", redis_ip))
 	{
 		cout << " \033[32m[INFO]: \033[0m" << "server redis_ip setting not found, use default setting" << endl;
 		redis_ip = "127.0.0.1";
 	}
-	if (!config.lookupValue("server.redis_port", redis_port))
+	if (!config.lookupValue("server.redis.redis_port", redis_port))
 	{
 		cout << " \033[32m[INFO]: \033[0m" << "server redis_port setting not found, use default setting" << endl;
 		redis_port = 6379;
 	}
-	if (!config.lookupValue("server.log_path", log_path))
+	if (!config.lookupValue("server.log.log_path", log_path))
 	{
 		cout << " \033[32m[INFO]: \033[0m" << "server log_path setting not found, use default setting" << endl;
 		log_path = "log/";
 	}
-	if (!config.lookupValue("server.info_on", info_on))
+	if (!config.lookupValue("server.log.info_on", info_on))
 	{
 		cout << " \033[32m[INFO]: \033[0m" << "server info_on setting not found, use default setting" << endl;
 		info_on = true;
 	}
-	if (!config.lookupValue("server.debug_on", debug_on))
+	if (!config.lookupValue("server.log.debug_on", debug_on))
 	{
 		cout << " \033[32m[INFO]: \033[0m" << "server debug_on setting not found, use default setting" << endl;
 		debug_on = true;
 	}
-	if (!config.lookupValue("server.warn_on", warn_on))
+	if (!config.lookupValue("server.log.warn_on", warn_on))
 	{
 		cout << " \033[32m[INFO]: \033[0m" << "server warn_on setting not found, use default setting" << endl;
 		warn_on = true;
 	}
-	if (!config.lookupValue("server.error_on", error_on))
+	if (!config.lookupValue("server.log.error_on", error_on))
 	{
 		cout << " \033[32m[INFO]: \033[0m" << "server error_on setting not found, use default setting" << endl;
 		error_on = true;
